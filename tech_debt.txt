@@ -1,0 +1,34 @@
+why do you need to know about tech debt?
+- it is an issue that is probably costing the company you work for money
+- you need to always have it at back of your mind -- your peers will respect you and you will have less 'nightmare projects'
+- it's a good interview question to find out how senior a candidate is
+
+ what is tech debt?
+- stuff that needs to be paid back (worked off) later
+things that cost you time and energy while they exist, and make other things more expensive (intersest).
+
+    . undocumented code
+    . projects that are missing a component (security, automation, configuration management, repeatibility)
+    . special snowflake servers
+    . things no one understands anymore
+
+ where it costs you?
+    . adding features
+    . maintenance
+    . training
+    . estimates
+ technical debt costs time and energy, and increases complexity and risk
+
+ how does technical debt start?
+- sometimes it's worth it. sometimes it ruins you.
+    . we promised this to a client by the end of the week
+    . we dont have time to do it correctly now -- we will fix it up later
+    . it just needs to work
+    . the customer isn't paying for us to document everything in detail right now
+
+ how to pay off technical debt
+    . create tickets/projects for repayment when you decide to do things which create techniacal debt
+    . one day per week dedicated to paying back tech debt
+    . learn how to communicate to your managers and business people about it
+    . manage your managers if they dont see it as a real problem stop offering up potential solutions that will make it worse
+    . stop being optimistic with your estimates

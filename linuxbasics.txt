@@ -1,0 +1,694 @@
+here we are learning about REDIRECTION
+
+for standard input the channel is STDIN --> 0
+for standard output the channel is STDOUT --> 1
+for standard error the channel is STDERR -->2
+this shoudl be in a file here the 1> indicates standard output
+imagine i had to take the error from terminal rather that showing it there so we use 2> like for example ls -alh dfjdfjaofjdojfsojf 2> my_all_learnings.txt
+ls: cannot access 'dkfjkldjf': No such file or directory
+for input redirection example: mail -s this is the subject < message.txt
+
+
+# what is piping??
+--> basically piping is getting the output and taking it as input for some other program like 
+Program1 | Program2
+so it is like 1 | 0 that is hooking standard output to standard input
+example :- ps aux uniq | sort | grep "some search"
+
+so this sign "&&" is used in case the first program works (program1 && program2) for example
+sudo apt-get update && sudo apt-get upgrade
+imagine I have used ls hello.txt && echo it is working in case hello.txt exists in the directory what we will get is this
+it was working
+but if the first one doesnt work
+ls: cannot access 'hell0': No such file or directory
+
+
+# delimiter | sort | uniq | grep | && | wc
+so if the text file is delimited using something like : or " " or ,
+we can use pipe here as cat filename.txt | cut -d "delimiter" "field to select"
+example i have used in the cli cat schooldata.txt | cut -d , -f3
+
+sort is used to sort as you wish like
+cat schooldata.txt | sort -bdf here -b is for ignoring whitespaces -d for dictionary order -f for not checking capital
+
+uniq is used to print only the data that is unique in the file 
+
+wc is used for word count in the textfile it prints no of line, no of words and byte
+
+grep is used for pattern matching like grep ashutosh ./* checks for ashutosh in all the file in the current directory
+./schooldata.txt:ashutosh anand,21,dav public school
+./schooldata.txt:ashutosh anand,21,dav public school
+
+
+
+# APT Package manager:
+1. we use apt-cache search is used to find out if the downloadable material is there in the packeage manager 
+2. to install we use sudo apt-get install
+3. to check the server or repos which is used to download cat /etc/apt/sourceslist
+4. apt-get remove to uninstall also autoremove to remove some not necessary utilities
+5. PPA is called personal pacakge archives so if something is not there in the sourcelist still we can download
+   them using Ppa by adding them to the system
+
+
+# Linux file permissions:
+
+total 12
+-rw-rw-r-- 1 pooh pooh  267 May 29 17:54 how_I_thnk_about_learning.txt
+-rw-rw-r-- 1 pooh pooh 2428 May 29 21:26 my_all_learnings.txt
+-rw-rw-r-- 1 pooh pooh  213 May 29 17:35 schooldata.txt
+
+here the first one tells if the given thing is a directory or a file 
+rwx means read write and execute
+first three for owner | second three for owener group | last three for others
+
+to change the permissions we use "sudo chmod"
+the binaries are rwx 1 and 0 for enabling it like 700 will make -rwx------ means only user can do anything 
+
+
+if we see the login.defs with "cat /etc/login.defs"
+there is umask it represents the premissions that is subtracted from 777 like default it is 022
+so the resultant is 755 so groups and other dont get write
+
+to change the owner we use "sudo chown owner:group filename"
+
+
+# basic access control in linux
+"id" gives the userid and much more
+uid=1000(pooh) gid=1000(pooh) groups=1000(pooh),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),122(lpadmin),135(lxd),136(sambashare)
+UID and GID:
+
+uid=1000(pooh): The user's ID is 1000 and the username is "pooh".
+gid=1000(pooh): The group ID is 1000 and the primary group name is also "pooh".
+Groups:
+
+groups=1000(pooh),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),122(lpadmin),135(lxd),136(sambashare): This lists all the groups the user "pooh" belongs to, along with their IDs and names.
+1000(pooh): Primary group "pooh" with GID 1000.
+4(adm): User is part of the "adm" group (GID 4), which typically grants administrative privileges.
+24(cdrom): User is part of the "cdrom" group (GID 24), which allows access to CD-ROM drives.
+27(sudo): User is part of the "sudo" group (GID 27), which allows executing commands as the superuser.
+30(dip): User is part of the "dip" group (GID 30), which allows dial-up access.
+46(plugdev): User is part of the "plugdev" group (GID 46), which allows managing removable devices.
+122(lpadmin): User is part of the "lpadmin" group (GID 122), which allows managing printers.
+135(lxd): User is part of the "lxd" group (GID 135), which is related to LXD (Linux container hypervisor).
+136(sambashare): User is part of the "sambashare" group (GID 136), which allows sharing files over a network using Samba
+
+
+
+pooh:x:1000:1000:pooh,,,:/home/pooh:/bin/bash
+
+here 1000 and 1000 is group id and user id we can see the password using "tail /etc/passwd"
+we can use "tail /etc/shadow" shadow stores encrypted password and only root can access it
+"cat /etc/group" holds all the groups
+
+* means can not login in the group one
+
+# adding user
+useradd -m -d /home/schnerg -s /bin/bash schnerg
+
+pooh:$y$j9T$Ms5cm9hNzZXxYggUvpQAr0$UGQxmbOL2oZgKF8l/ciyHwZ4VZ0JJisxz5s6e.YCRt6:19764:0:99999:7:::
+schnerg:!:19872:0:99999:7:::
+
+the user schnerg doesnt has any passwd as there is ! in it rather than having a hash
+
+in the /etc/skel there is these files
+.  ..  .bash_logout  .bashrc  .profile
+
+so whenever a user directory is created it will get these files
+
+passwd is used to set the password of the user with sudo 
+
+uermod -L is used to lock the user and usermod -U is used to unlock the user
+
+userdel is used to delete the user
+so imagine if i delete the user then the user home directory will still exist but the owner and group
+will get replaced with the uid and group id
+
+
+newusers is also used to add new user check manual for it
+
+# Processes overview
+
+each process has two parts:
+1. first one is some RAM address where it has to either write or read the data
+2. second one is kernel data structure that deals with the processes like owner, signal mask, etc
+
+A Kernel is an intermediary between applications and hardware. This means that applications can
+run without knowing or caring about the underlying hardware details. It manages low-level tasks
+such as disk management, task management, and memory management.
+
+the PID 1 in htop is the init process called as parent of other all processes
+
+each process has some parent process so if something happens we can just findout the parent 
+process which caused the issue 
+UID is who owns the process
+EUID or effective user id is giving permission to someone else than who spawned the process
+
+higher the NICENESS of the process nicer it is means low priority
+
+see man systemd to find out more about the first init
+
+
+## Process Signals
+https://man7.org/linux/man-pages/man7/signal.7.html
+
+this is the man page for the different signals 
+
+man 7 signal
+
+Signals can be sent by the kernel when:
+1) a process something REALLY BAD. 
+(AKA Divide by Zero)
+2) to notify a parent process of the death of a child process
+3) to notify that a process is ready 
+-
+Test Signals:
+How processes communicate information about themselves to each other and the kernal (and how the kernal communicates back to processes)
+
+-
+
+SIGKILL
+(9)
+
+Kills a process without asking the process to stop
+(use it on a process that hasn't responded to a SIGTERM)
+
+-
+
+SIGTERM
+(15)
+
+Asks a process to stop/end
+
+kill -9 is bit dangerous
+by default kill -15 works
+
+like "kill PID"
+
+killall is used to kill all the processes
+
+SIGKILL and SIGSTOP cant be caught, blocked or ignored
+
+pgrep and pkill are more refined ways of searching and killing commands
+
+so if we use "sudo pkill -u testusr" it would kill all the processes inititated by the user:testusr
+
+#Process States and file system
+
+Process filesystem is a virtual file syste the linux kernel mounts to post information about its
+processes so that applications have easy access to them
+every process wants CPU time
+the kernel determines the scheduling processes
+
+4 states of the processes are:-
+run-able --> eligibe to be shceduled for CPU time has all the info it needs
+sleeping --> waiting for something
+zombie --> finished with what it was doing waiting to give back info it has come up with and be 
+	killed by kernel
+stopped --> may have been in the middle of doing something but received stop signal and is now
+	waiting for the continue signal
+
+#nice and renice
+so we can just nice any process and launch it like "nice -n (number from -20 to 20 depending on the priority) process"
+negative means most important while positive goes to less important
+"renice -s 2744" PID is used to just renice the value of the process so if you are starting any random process you will put the nice value too much positive
+
+Example Problem: You are on a new system and it has slowed to a craw. 
+What do you do?
+1) Open up top (or htop)
+2) What is taking up the MOST memory?
+3) How much memory is free?
+4) What is taking up the highest % of CPU usage?
+5) Are there a lot of zombie processes (frozen parent)?
+
+
+
+df -ah
+man df
+ls -alh /proc
+ls -alh /proc/1
+man strace
+
+--
+What do you use 'ps' for?
+
+listing processes
+
+--
+The kernel automatically monitors the state of each process via a virtual file system called:
+
+/proc filesystem
+(currently running/active processes)
+
+--
+cwd
+
+get path name of current working directory / show you where the process is operating from
+(similar to pwd but without the trailing line terminator)
+
+--
+What does 'fd' in 'ls fd' do?
+
+List file descriptors for you
+
+--
+What does 'map' in 'ls map' do?
+
+List memory mapping info for you
+(if you wanna see what shared libraries it is using, more at 6:14)
+
+
+--
+The file 'cmd' will generally be what ______ the process is currently executing.
+
+command
+
+--
+The 'cmdline' is generally how the process was ___________.
+
+called
+
+--
+What does 'environ' show you?
+(ex syntax: cat environ)
+
+environment variables
+- path
+
+--
+What will 'statm' show you?
+(ex syntax: cat statm)
+
+Memory
+
+--
+Remember: quite a bit of this stuff isn't really legible in its native form, it is meant to be used in conjunction with other programs like htop.
+You start to appreciate the functionality that is built into linux/BASH commands here.
+
+--
+strace
+(command)
+
+Attach two processes & really see what they are doing
+(in a way that is very difficult otherwise)
+- this is a vital tool for sysadmins, you NEED this
+
+
+# file system
+
+"df -ah" tells about file system disk usage
+
+-what is api?
+ the language used to deal with the underlyng filesystem
+
+Linux runs almost everything through the filesystem 
+ example all the hardware serial through cd-rom
+ we have 2 files each --> where device is mounted and device drivers
+
+
+relative path is from the current directory
+while absolute path is relative to root or /
+absolute path are used in bash scripting too much
+
+if you type "ifconfig" it will work so will "/sbin/ifconfig" from any directory sbin stores system binary
+the first one is relative while the second one is absolute
+
+
+# file system layout
+
+"ls /" everything u see there is file system except "lost+found" which is completly for physical
+mount devices
+
+"/etc" etc stores all the configuration files .conf one
+"/bin" stores the normal binary or commands used by the user
+"/sbin" super user or root binary
+"/tmp" temprary files that are blown after restart
+"/home" has the user directory 
+"/lib" stores the libraries
+"/lib64" for 64 bit processors
+
+if you want to see the file system hierarchy use "man hier"
+
+# The story of root
+
+"ls /dev | grep sd" the sda we see are the discs and sda1 2 3 are the partitions
+lib and lib64 are dynamically linked libraries "dll"
+if we connect a flash drive or cd it shows in "/media"
+"/mnt" diretory where automounted items go 
+"/opt" is for optional software if not downloaded from packet manager
+"/proc" is virtual file system to communicate about the state of the process running
+"/tmp" temporary files refreshes every time
+"/usr" all the header file, binary, games
+"/var" various things like logs, cache
+
+
+# Linux file types
+
+there are mainly these file types that can be seen with long listing
+
+lrwxrwxwx 1 dave dave 28 Apr 10 15:39 lik-to-file -> thisisadir/direct/linkedfile
+--> the l represents link 
+
+drwxrwxrwx here d is for directorr
+
+-rwxrwxrwx here - means normal file
+
+brw-rw---- here b represents block somethig like having storage so this is the meeting point of the
+system kernel and the firmware of the hardware device
+
+crwxrwxrwx here c represents character so it is also used to communicate between the external device and the drivers for it 
+stored
+
+sockets are communication channel
+
+pipes are similar
+
+# Task scheduling with cron
+
+"crontab -l" to see the task scheduled
+"crontab -e" to schedue taks for any user
+
+ls /var/spool/cron/crontabs
+ls /etc/cron.d
+
+"sudo /etc/crontab" system wide crontab for scheduling
+
+"sudo su" "crontab -e -u pooh" to edit the crontab of any user being root on behalf of that user
+
+# some helful commands
+Ctrl + a front
+Ctrl + e end
+alt + f forward
+alt + b backward
+ctrl + r reverse search | ctrl + g to come out of it
+
+# tmux tutorial
+
+ssh to any running vm
+sudo apt install tmux
+
+ctrl -b <command> means tmux do this command
+ctrl b c creates a new window
+ctrl b , to rename the window
+ctrl b p to go to previous window 
+ctrl b n to go to next window
+ctrl b w lists all the window
+ctrl b % splits vertically
+ctrl b : splits howrizontally we have to just rename
+
+create a session "tmux new -s <session name>" 
+
+detaching a session "ctrl b d"
+tmux list-sessions
+attach again "tmux attach -t <session name>"
+
+><><><><><> cheat sheet for tmux <><><><><><><><><><><><
+session management
+tmux ls (or tmux list-sessions)
+tmux new -s session-name
+Ctrl-b d Detach from session
+tmux attach -t [session name]
+tmux kill-session -t session-name
+
+Ctrl-b c Create new window
+Ctrl-b d Detach current client
+Ctrl-b l Move to previously selected window
+Ctrl-b n Move to the next window
+Ctrl-b p Move to the previous window
+Ctrl-b & Kill the current window
+Ctrl-b , Rename the current window
+Ctrl-b q Show pane numbers (used to switch between panes)
+Ctrl-b o Switch to the next pane
+Ctrl-b ? List all keybindings
+
+moving between windows
+Ctrl-b n (Move to the next window)
+Ctrl-b p (Move to the previous window)
+Ctrl-b l (Move to the previously selected window)
+Ctrl-b w (List all windows / window numbers)
+Ctrl-b window number (Move to the specified window number, the
+default bindings are from 0 -- 9)
+
+Tiling commands
+Ctrl-b % (Split the window vertically)
+CTRL-b " (Split window horizontally)
+Ctrl-b o (Goto next pane)
+Ctrl-b q (Show pane numbers, when the numbers show up type the key to go to that pane)
+Ctrl-b { (Move the current pane left)
+Ctrl-b } (Move the current pane right)
+
+Make a pane its own window
+Ctrl-b : "break-pane"
+
+add to ~/.tmux.conf
+bind | split-window -h
+bind - split-window -v
+
+# Archiving and compression
+
+tree to just see everything
+
+archiving means taking all the files or folders and clustering inside one folder
+compression is different from archiving
+
+ftp is bullshit
+
+"tar -zvcf first.tar.gz Documents/"
+f is for folders
+c is for compression
+v is for verbose to tell what has been compressed
+z is for gzip
+
+first.tar.gz here tar tells that it is archived and gz means gzip
+
+
+"tar -zxvf filename"
+z for gzip
+x for extract
+v for verbose
+f for folder
+
+
+"du -sh filename" to check the disc usage
+
+tar bomb is when you compress form being in the directory it is a very bad practice
+you must be one directory above the directory being compressed otherwise it will start giving all the
+compressed files rather than giving a single directory
+
+"which" command is used to find out the location
+
+# path
+
+so whenever we run a command it uses $PATH to find out where the command is residing in the dire
+ctories
+
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+for normal user
+
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+for root user
+
+appending the directory to the PATH variable 
+"PATH=$PATH:/some/dir"
+appending here means that after the usr/local/bin and all if it isnt found it will get searched
+in the appended directory
+
+prepending the directory to the PATH variable
+"PATH=/root:$PATH"
+ example i have a script named sudo in the root directory of the host what i do is add the root
+prepending to the PATH variable so what will happen is if i run any command like sudo .....
+it will get first searched in the root directory and hence the bad script named sudo will run
+
+
+which sudo will return /root not usr/bin
+
+so always use abosulte path
+
+so as we are just doing it in terminal no issue after logout PATH will again become normal 
+but if we hardcode anything in the .profile or .bash_profile
+
+
+~ so if we have to change the path for a user then we can modify the .profile or .bash_profile in his home directory
+~ but if we have to change it for the root we will have to modify the .profile or .bash_profile in root directory
+~ and if we have to do it for all users except the root we can do it in the /etc/profile with commenting before export PATH
+
+# for saving whatever you are doing in terminal "SCRIPT"
+
+type "script <name of the file>" in the command line
+ctrl -d for 
+less <filename>
+
+
+# Aliases
+
+some commands are repeatedly used per day
+
+what is shdowing?
+shadowing means there is already a command with this name what you are doing is overwriting 
+that with something else
+
+like "alias ls="las -a"" "alias vim="nvim""
+
+you can type "alias" to check all the aliases 
+
+we can make aliases by just appending to ~/.bashrc file
+alias lr="ls -lra"
+
+"unalias" to remove the alias
+
+#lsof 
+
+if we want to see which all process have the file opened we can just type
+"lsof <filename>" like "lsof /var/log/nginx/access.log"
+
+
+"netstat -tupln" displays all active TCP and UDP network connections, along with their associated port numbers and states
+
+find all the files a single process has opened
+"lsof -p <pid>"
+
+file descriptor 0 std 1 std in, 2 std error, 3 std out wrx is same
+
+pipe it with | grep bin to locate binary files
+	     | grep .so for shared objects
+	     | grep log for checking logging to address
+	     
+find out which all are using this library of file
+"lsof  /lib/x86_64-linux-gnu/libssl.so.1.0.0"
+
+find out what all files a  user has opened
+"lsof - u <username>"
+
+"lsof -i <protocol>"
+
+#monit for moinitoring
+
+systemctl enable monit
+systemctl start monit
+
+so i have made a monitrc file in the directory /etc/monitrc/conf.d named tutorialinux
+
+we have to give chmod 600 
+then just do "systemctl restart monit"
+
+wget localhost:2812
+
+
+SSH local forwarding for web dashboard "ssh -L 1234:localhost:2812 remoteuser@remotehost.net"
+
+here we are forwarding port 2812 of web server to the local port 1234 on the host device
+so if we go to browser and use port 1234 you will get the monit
+
+for monit you can take the password from "grep allow /etc/monit/monitrc"
+
+#Manging services systemd
+
+systemctl : manages services
+journalctl : manages logs
+
+~ service command
+"service <service> <action>" service mysql status, service nginx enable  --> these are older ones
+
+~systemd
+"systemctl <action> <service>" systemctl status mysql, systemctl start nginx
+
+--> status
+"systemctl status docker"
+
+--> start
+"systemctl start docker"
+
+--> stop
+"systemctl stop docker"
+
+--> enable or disable take care of starting at boot or not starting at boot
+"systemctl enable/disablet <service>"
+
+for wordpress "systemctl enable mysql nginx php5-fpm monit"
+
+systemctl commands :-
+- enable -> make sure this unit always starts at boot
+- disable -> opposite of enable
+- start -> start this unit now (will not automatically start at next boot)
+- stop -> stop a running unit (wil not prevernt starting at boot, if enabled)
+- reload -> re-read the program configuration files (config updates)
+- restart -> kill the process and start it again, re-reading configuration files
+- status -> check status of unit, show last few lines of log output
+
+
+journalctl commands :-
+- journalctl -xn
+- journalctl -u <unit> --> get log entries from a specific service
+- journalctl -b --> for checking boot log
+- journalctl -f --> following systemlog
+- journalctl --since "10 min ago" --> time strings
+
+# some books to refer
+
+linux and unix system administrator
+the practice of system and network administration
+structure and interpretation of computer programs
+little schemer
+
+help.ubuntu.com/community/servers
+serverfault.com
+stackoverflow
+
+# tee command
+
+you can use "tail -f <filename>" to see the changes in file in real time
+"date | tee log.log" so it will get written in log.log but also show in real time in shell
+use -a for append "date | tee -a log.log"
+without append it will get erased everytime
+
+# database backup and resource
+
+store mysql root password in /root/.my.cnf so our script (running as root) can access it chmod 600
+
+[client]
+user = root
+password = yourmysqlrootpass
+
+- backup one user database
+"mysqldump --add-drop-tablel --databases yourdatabasename > /home/<username>/backups/db/$(/bin/date '+\%Y-\%m-\%d').sql.bak"
+
+- backup all databases
+"mysqldump --all-databases --all-routine > /path/to/fulldump.sql"
+
+what /bin/date '+\%Y-\%m-\%d' -----> \2024-\06-\12
+
+- restoring a database backup
+create post, backup, deletepost, restore database to restore a single database
+"mysql -u root -p [database_name] < backupname.sql"
+
+- to restore all databases (tables need to exist or backup needs to contain CREATE TABEL statements):
+"mysql -u root -p < alldatabases.sql"
+
+~ make a .my.cnf in root directory
+~ change permissions for it chmod 600 .my.cnf
+
+now run the backup commands
+~ mysqldump --add
+~ mkdir -p /home/backups/db
+
+# mariadb/mysql
+
+sudo apt update
+sudo apt install mariadb-server
+systemctl start mariadb
+mysql_install_db
+which mysql_secure_installation
+
+
+# vim essentials
+
+:q to quit
+:wq write and quit
+:w write
+:!q dont save
+:set number -to set numbering
+:dd 3 - delete 3 lines
+:u - undo last action
+:ctrl r - redo 
+/ <search anything> -- upper case N to find previous lower case n to find next occurence
+:%s/<to be replaced>/<with what to be replaced>/gc - g means greedy for all occurence c for confirmation but this will ask or confirmation remove c and it wont ask
+
